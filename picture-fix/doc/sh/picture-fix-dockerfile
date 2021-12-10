@@ -1,0 +1,15 @@
+FROM java
+MAINTAINER rex.tan@hiya3d.com
+
+RUN mkdir /deploy
+RUN mkdir /deploy/logs
+ENV MYPATH /deploy
+WORKDIR $MYPATH
+    
+ADD picture-fix.jar $MYPATH/   
+
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN echo 'Asia/Shanghai' >/etc/timezone 
+
+ENTRYPOINT ["java", "-Xms300m", "-Xmx300m", "-jar", "/deploy/picture-fix.jar"]
+
