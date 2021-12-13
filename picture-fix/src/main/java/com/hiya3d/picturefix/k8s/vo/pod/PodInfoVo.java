@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class PodInfoVo implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String ContainersReady = "ContainersReady";
 	
 	@ApiModelProperty("名称")
 	private String name;
@@ -26,6 +27,21 @@ public class PodInfoVo implements Serializable {
 	
 	@ApiModelProperty("节点名称")
 	private String nodeName;
+	
+	@ApiModelProperty("host ip")
+	private String hostIp;
+	
+	@ApiModelProperty("pod ip")
+	private String podIp;
+	
+	@ApiModelProperty("phase")
+	private String phase;
+	
+	@ApiModelProperty("容器状态")
+	private String containersStatus;
+	
+	@ApiModelProperty("容器状态")
+	private List<PodStatusVo> podStatusList;
 	
 	@ApiModelProperty("容器信息")
 	private List<PodContainerVo> containers;

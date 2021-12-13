@@ -18,6 +18,7 @@ import com.hiya3d.picturefix.k8s.vo.node.NodeInfoVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodContainerVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodInfoVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodPortVo;
+import com.hiya3d.picturefix.k8s.vo.pod.PodStatusVo;
 import com.hiya3d.picturefix.k8s.vo.service.PortVo;
 import com.hiya3d.picturefix.k8s.vo.service.ServiceInfoVo;
 
@@ -26,6 +27,9 @@ import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1ContainerPort;
+import io.kubernetes.client.openapi.models.V1ContainerState;
+import io.kubernetes.client.openapi.models.V1ContainerStateWaiting;
+import io.kubernetes.client.openapi.models.V1ContainerStatus;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentCondition;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
@@ -33,7 +37,9 @@ import io.kubernetes.client.openapi.models.V1Node;
 import io.kubernetes.client.openapi.models.V1NodeSystemInfo;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
+import io.kubernetes.client.openapi.models.V1PodCondition;
 import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1PodStatus;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1ResourceRequirements;
 import io.kubernetes.client.openapi.models.V1Service;
@@ -139,6 +145,41 @@ public class DataParseUtil {
 				containers.add(pvo);
 			}
 		}
+		// status
+		V1PodStatus status = item.getStatus();
+		if(status != null) {
+			info.setHostIp(status.getHostIP());
+			info.setPhase(status.getPhase());
+			info.setPodIp(status.getPodIP());
+		}
+		if(status != null && status.getConditions() != null) {
+			List<V1PodCondition> conditionList = status.getConditions();
+			for(V1PodCondition podCondition: conditionList) {
+				if(PodInfoVo.ContainersReady.equals(podCondition.getType())) {
+					info.setContainersStatus(podCondition.getStatus());
+				}
+			}
+		}
+		List<PodStatusVo> podStatusList = new LinkedList<>();
+		if(status != null && status.getContainerStatuses() != null) {
+			List<V1ContainerStatus> statusList = status.getContainerStatuses();
+			for(V1ContainerStatus constatus: statusList) {
+				PodStatusVo podstatusVo = new PodStatusVo();
+				podstatusVo.setImage(constatus.getImage());
+				podstatusVo.setName(constatus.getName());
+				podstatusVo.setReady(constatus.getReady());
+				podstatusVo.setRestartCount(constatus.getRestartCount());
+				podstatusVo.setStarted(constatus.getStarted());
+				V1ContainerState state = constatus.getState();
+				if(state != null  && state.getWaiting() != null) {
+					V1ContainerStateWaiting waiting = state.getWaiting();
+					podstatusVo.setReason(waiting.getMessage());
+					podstatusVo.setMessage(waiting.getMessage());
+				}
+				podStatusList.add(podstatusVo);
+			}
+		}
+		info.setPodStatusList(podStatusList);
 		//
 		info.setContainers(containers);
 	}
