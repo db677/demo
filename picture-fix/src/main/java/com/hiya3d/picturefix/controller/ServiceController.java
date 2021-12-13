@@ -39,6 +39,17 @@ public class ServiceController {
 		return Result.success();
 	}
 	
+	@ApiOperation("更新")
+	@PostMapping("/service/update")
+	public Result<?> update(@RequestBody ServiceReq req) {
+		req.setContainerPort(9999);
+		req.setName("picture-fix");
+		req.setNamespace("dev");
+		K8sUtil.updateService(req);
+		
+		return Result.success();
+	}
+	
 	@ApiOperation("删除")
 	@PostMapping("/service/delete")
 	public Result<?> delete(@RequestBody ServiceReq req) {

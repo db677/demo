@@ -34,7 +34,22 @@ public class IngressController {
 		req.setContainerPort(9999);
 		req.setName("picture-fix");
 		req.setNamespace("dev");
+		req.setHost("hiya3d.com");
+		req.setPath("/k8s");
 		K8sUtil.createIngress(req);
+		
+		return Result.success();
+	}
+	
+	@ApiOperation("更新")
+	@PostMapping("/ingress/update")
+	public Result<?> update(@RequestBody IngressReq req) {
+		req.setContainerPort(9999);
+		req.setName("picture-fix");
+		req.setNamespace("dev");
+		req.setHost("hiya3d.com");
+		req.setPath("/k8s");
+		K8sUtil.updateIngress(req);
 		
 		return Result.success();
 	}

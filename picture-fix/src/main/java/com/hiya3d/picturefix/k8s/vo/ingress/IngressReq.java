@@ -20,4 +20,8 @@ public class IngressReq implements Serializable {
 	private String namespace;
 	
 	private Integer containerPort;
+	
+	private String host;
+	
+	private String path;
 }

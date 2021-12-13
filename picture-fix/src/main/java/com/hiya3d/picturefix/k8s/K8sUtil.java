@@ -113,6 +113,63 @@ public class K8sUtil {
 	}
 	
 	/**
+	 * 构建ingress body
+	 * @author Rex.Tan
+	 * @date 2021-12-13 11:41:56
+	 * @param req
+	 * @return
+	 */
+	private static ExtensionsV1beta1Ingress buildIngressBody(IngressReq req) {
+		ExtensionsV1beta1Ingress ingress = new ExtensionsV1beta1Ingress();
+		ingress.setApiVersion("extensions/v1beta1");
+		ingress.setKind("Ingress");
+		/**
+		 * metadata
+		 */
+		V1ObjectMeta meta = new V1ObjectMeta();
+		Map<String, String> annoMap = new HashMap<>();
+		annoMap.put("nginx.ingress.kubernetes.io/cors-allow-headers", ">-DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,token,channel,access_token");
+		annoMap.put("nginx.ingress.kubernetes.io/cors-allow-methods", "PUT,GET,POST,OPTIONS,DELETE");
+		annoMap.put("nginx.ingress.kubernetes.io/cors-allow-origin", "*");
+		annoMap.put("nginx.ingress.kubernetes.io/enable-cors", "true");
+		annoMap.put("nginx.ingress.kubernetes.io/service-weight", "");
+		annoMap.put("nginx.ingress.kubernetes.io/proxy-body-size", "50m");
+		annoMap.put("nginx.ingress.kubernetes.io/proxy-send-timeout", "300");
+		annoMap.put("nginx.ingress.kubernetes.io/proxy-read-timeout", "300");
+		annoMap.put("nginx.ingress.kubernetes.io/proxy-connect-timeout", "300");
+		meta.setAnnotations(annoMap);
+		meta.setName(req.getName());
+		meta.setNamespace(req.getNamespace());
+		ingress.setMetadata(meta);
+		/**
+		 * spec
+		 */
+		ExtensionsV1beta1IngressSpec spec = new ExtensionsV1beta1IngressSpec();
+		// rules
+		List<ExtensionsV1beta1IngressRule> rules = new LinkedList<>();
+		ExtensionsV1beta1IngressRule rule = new ExtensionsV1beta1IngressRule();
+		rule.setHost(req.getHost());
+		// rules: http
+		ExtensionsV1beta1HTTPIngressRuleValue http = new ExtensionsV1beta1HTTPIngressRuleValue();
+		// rules: http: path
+		List<ExtensionsV1beta1HTTPIngressPath> pathList = new LinkedList<>();
+		ExtensionsV1beta1HTTPIngressPath path = new ExtensionsV1beta1HTTPIngressPath();
+		path.setPath(req.getPath());
+		ExtensionsV1beta1IngressBackend backend = new ExtensionsV1beta1IngressBackend();
+		backend.setServiceName(req.getName());
+		backend.setServicePort(new IntOrString(req.getContainerPort()));
+		path.setBackend(backend);
+		pathList.add(path);
+		http.setPaths(pathList);
+		rule.setHttp(http);
+		rules.add(rule);
+		spec.setRules(rules);
+		ingress.setSpec(spec);
+		
+		return ingress;
+	}
+	
+	/**
 	 * 创建ingress负载均衡
 	 * @author Rex.Tan
 	 * @date 2021-12-10 15:28:54
@@ -120,56 +177,25 @@ public class K8sUtil {
 	 */
 	public static void createIngress(IngressReq req) {
 		ExtensionsV1beta1Api api = new ExtensionsV1beta1Api(getClient());
+		ExtensionsV1beta1Ingress ingress = buildIngressBody(req);
 		try {
-			ExtensionsV1beta1Ingress ingress = new ExtensionsV1beta1Ingress();
-			ingress.setApiVersion("extensions/v1beta1");
-			ingress.setKind("Ingress");
-			/**
-			 * metadata
-			 */
-			V1ObjectMeta meta = new V1ObjectMeta();
-			Map<String, String> annoMap = new HashMap<>();
-			annoMap.put("nginx.ingress.kubernetes.io/cors-allow-headers", ">-DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,token,channel,access_token");
-			annoMap.put("nginx.ingress.kubernetes.io/cors-allow-methods", "PUT,GET,POST,OPTIONS,DELETE");
-			annoMap.put("nginx.ingress.kubernetes.io/cors-allow-origin", "*");
-			annoMap.put("nginx.ingress.kubernetes.io/enable-cors", "true");
-			annoMap.put("nginx.ingress.kubernetes.io/service-weight", "");
-			annoMap.put("nginx.ingress.kubernetes.io/proxy-body-size", "50m");
-			annoMap.put("nginx.ingress.kubernetes.io/proxy-send-timeout", "300");
-			annoMap.put("nginx.ingress.kubernetes.io/proxy-read-timeout", "300");
-			annoMap.put("nginx.ingress.kubernetes.io/proxy-connect-timeout", "300");
-			meta.setAnnotations(annoMap);
-			meta.setName(req.getName());
-			meta.setNamespace(req.getNamespace());
-			ingress.setMetadata(meta);
-			/**
-			 * spec
-			 */
-			ExtensionsV1beta1IngressSpec spec = new ExtensionsV1beta1IngressSpec();
-			// rules
-			List<ExtensionsV1beta1IngressRule> rules = new LinkedList<>();
-			ExtensionsV1beta1IngressRule rule = new ExtensionsV1beta1IngressRule();
-			rule.setHost("hiya3d.com");
-			// rules: http
-			ExtensionsV1beta1HTTPIngressRuleValue http = new ExtensionsV1beta1HTTPIngressRuleValue();
-			// rules: http: path
-			List<ExtensionsV1beta1HTTPIngressPath> pathList = new LinkedList<>();
-			ExtensionsV1beta1HTTPIngressPath path = new ExtensionsV1beta1HTTPIngressPath();
-			path.setPath("/k8s");
-			ExtensionsV1beta1IngressBackend backend = new ExtensionsV1beta1IngressBackend();
-			backend.setServiceName(req.getName());
-			backend.setServicePort(new IntOrString(req.getContainerPort()));
-			path.setBackend(backend);
-			pathList.add(path);
-			http.setPaths(pathList);
-			rule.setHttp(http);
-			rules.add(rule);
-			spec.setRules(rules);
-			ingress.setSpec(spec);
-			/**
-			 * create
-			 */
 			api.createNamespacedIngress(req.getNamespace(), ingress, null, null, null);
+		} catch (ApiException e) {
+			throwEx(e);
+		}
+	}
+	
+	/**
+	 * 更新ingress
+	 * @author Rex.Tan
+	 * @date 2021-12-13 11:43:37
+	 * @param req
+	 */
+	public static void updateIngress(IngressReq req) {
+		ExtensionsV1beta1Api api = new ExtensionsV1beta1Api(getClient());
+		ExtensionsV1beta1Ingress ingress = buildIngressBody(req);
+		try {
+			api.replaceNamespacedIngress(req.getName(), req.getNamespace(), ingress, null, null, null);
 		} catch (ApiException e) {
 			throwEx(e);
 		}
@@ -248,13 +274,13 @@ public class K8sUtil {
 	}
 	
 	/**
-	 * 创建service
+	 * 构建service body
 	 * @author Rex.Tan
-	 * @date 2021-12-10 13:34:35
+	 * @date 2021-12-13 11:35:57
 	 * @param req
+	 * @return
 	 */
-	public static void createService(ServiceReq req) {
-		CoreV1Api api = new CoreV1Api(getClient());
+	private static V1Service buildServiceBody(ServiceReq req) {
 		V1Service service = new V1Service();
 		service.setApiVersion("v1");
 		service.setKind("Service");
@@ -290,8 +316,37 @@ public class K8sUtil {
 		 */
 		serviceSpec.setType("ClusterIP");
 		service.setSpec(serviceSpec);
+		
+		return service;
+	}
+	
+	/**
+	 * 创建service
+	 * @author Rex.Tan
+	 * @date 2021-12-10 13:34:35
+	 * @param req
+	 */
+	public static void createService(ServiceReq req) {
+		CoreV1Api api = new CoreV1Api(getClient());
+		V1Service service = buildServiceBody(req);
 		try {
 			api.createNamespacedService(req.getNamespace(), service, null, null, null);
+		} catch (ApiException e) {
+			throwEx(e);
+		}
+	}
+	
+	/**
+	 * 更新service
+	 * @author Rex.Tan
+	 * @date 2021-12-13 11:38:02
+	 * @param req
+	 */
+	public static void updateService(ServiceReq req) {
+		CoreV1Api api = new CoreV1Api(getClient());
+		V1Service service = buildServiceBody(req);
+		try {
+			api.replaceNamespacedService(req.getName(), req.getNamespace(), service, null, null, null);
 		} catch (ApiException e) {
 			throwEx(e);
 		}
@@ -380,7 +435,7 @@ public class K8sUtil {
 	 * @param req
 	 * @return
 	 */
-	public static V1Deployment buildDeploymentBody(DeploymentReq req) {
+	private static V1Deployment buildDeploymentBody(DeploymentReq req) {
 		V1Deployment deploy = new V1Deployment();
 		deploy.setApiVersion("apps/v1");
 		deploy.setKind("Deployment");
