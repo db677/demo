@@ -70,7 +70,7 @@ import io.kubernetes.client.util.credentials.AccessTokenAuthentication;
 
 public class K8sUtil {
 	private static ApiClient client = null;
-
+	
 	/**
 	 * 查询ingress
 	 * @author Rex.Tan
@@ -349,6 +349,38 @@ public class K8sUtil {
 	 */
 	public static void createDeployment(DeploymentReq req) {
 		AppsV1Api api = new AppsV1Api(getClient());
+		V1Deployment deploy = buildDeploymentBody(req);
+		try {
+			api.createNamespacedDeployment(req.getNamespace(), deploy, null, null, null);
+		} catch (ApiException e) {
+			throwEx(e);
+		}
+	}
+	
+	/**
+	 * 更新deployment
+	 * @author Rex.Tan
+	 * @date 2021-12-13 9:59:32
+	 * @param req
+	 */
+	public static void updateDeployment(DeploymentReq req) {
+		AppsV1Api api = new AppsV1Api(getClient());
+		V1Deployment deploy = buildDeploymentBody(req);
+		try {
+			api.replaceNamespacedDeployment(req.getName(), req.getNamespace(), deploy, null, null, null);
+		} catch (ApiException e) {
+			throwEx(e);
+		}
+	}
+	
+	/**
+	 * 构建deployment body
+	 * @author Rex.Tan
+	 * @date 2021-12-13 9:57:01
+	 * @param req
+	 * @return
+	 */
+	public static V1Deployment buildDeploymentBody(DeploymentReq req) {
 		V1Deployment deploy = new V1Deployment();
 		deploy.setApiVersion("apps/v1");
 		deploy.setKind("Deployment");
@@ -481,11 +513,8 @@ public class K8sUtil {
 		 * create
 		 */
 		deploy.setSpec(spec);
-		try {
-			api.createNamespacedDeployment(req.getNamespace(), deploy, null, null, null);
-		} catch (ApiException e) {
-			throwEx(e);
-		}
+		
+		return deploy;
 	}
 	
 	/**

@@ -55,6 +55,28 @@ public class DeploymentController {
 		return Result.success();
 	}
 	
+	@ApiOperation("修改")
+	@PostMapping("/deployment/update")
+	public Result<?> update(@RequestBody DeploymentReq req) {
+		req.setContainerPort(9999);
+		req.setHealthCheckPath("/k8s/health-check");
+		req.setImage("10.0.20.6:60001/kubernetes/picture_fix_docker:1639045466107");
+		req.setReplicas(1);
+		req.setLimitCpu(new BigDecimal("0.6"));
+		req.setLimitMemory(new BigDecimal("500"));
+		req.setName("picture-fix");
+		req.setResCpu(new BigDecimal("0.6"));
+		req.setResMemory(new BigDecimal("500"));
+		List<VolumeMountVo> mountList = new LinkedList<>();
+		mountList.add(new VolumeMountVo("deploy-log", "/deploy/logs"));
+		req.setVolumeMounts(mountList);
+		req.setNamespace("dev");
+		//
+		K8sUtil.updateDeployment(req);
+		
+		return Result.success();
+	}
+	
 	@ApiOperation("删除")
 	@PostMapping("/deployment/delete")
 	public Result<?> delete(@RequestBody DeploymentReq req) {
