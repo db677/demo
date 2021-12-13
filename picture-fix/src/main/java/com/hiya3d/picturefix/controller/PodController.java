@@ -25,4 +25,9 @@ public class PodController {
 		return new Result<>().data(K8sUtil.findPod("dev"));
 	}
 	
+	@ApiOperation("列表查询")
+	@GetMapping("/pod/get")
+	public Result<?> get() {
+		return new Result<>().data(K8sUtil.readPod("picture-fix-6dc4476f98-csb6h", "dev"));
+	}
 }

@@ -228,6 +228,17 @@ public class K8sUtil {
 		return podList;
 	}
 	
+	public static List<PodInfoVo> readPod(String name, String namespace){
+		CoreV1Api api = new CoreV1Api(getClient());
+		try {
+			V1Pod pod = api.readNamespacedPod(name, namespace, null, null, null);
+			System.out.println(pod);
+		} catch (ApiException e) {
+			throwEx(e);
+		}
+		return null;
+	}
+	
 	/**
 	 * 查询service
 	 * @author Rex.Tan

@@ -1,3 +1,11 @@
+## 官方git
+
+```shell
+https://github.com/kubernetes-client/java
+```
+
+
+
 ## 查看cluster role
 
 ```shell
@@ -66,6 +74,38 @@ kubectl get pods --field-selector=status.phase!=Running,spec.restartPolicy=Alway
 
 kubectl get statefulsets,services --all-namespaces --field-selector metadata.namespace!=default
 
+
+```
+
+
+
+## 获取token
+
+```shell
+
+#1.创建admin user(必须创建admin user才能查看资源信息)
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kube-system
+
+#2.查看token
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
 
 ```
 
