@@ -14,7 +14,7 @@
 </head>
 
 <body>
-<div id="dlg" class="easyui-dialog" title="info" data-options="iconCls:'icon-info', closed: true, modal: true" style="width:600px;height:400px;padding:13px">
+<div id="dlg" class="easyui-dialog" title="详情" data-options="iconCls:'icon-information', closed: true, modal: true" style="width:600px;height:400px;padding:13px">
 	<div id="dlg-text"></div>
 </div>
 <div id="tb">
@@ -39,13 +39,13 @@
         { field: "phase", title: "运行状态", width: "100", align: "left" },
         { field: "containersStatus", title: "容器状态", width: "100", align: "left" },
         { field: "pod", title: "pod", width: "100", align: "left", formatter: (val, row, index) => {
-            return "<a class='dg-cell-a' href='#'>详细</a>";
+            return "<a class='dg-cell-a' href='#'>详情</a>";
         } },
         { field: "conditions", title: "conditions", width: "100", align: "left", formatter: (val, row, index) => {
-            return "<a class='dg-cell-a' href='#'>详细</a>";
+            return "<a class='dg-cell-a' href='#'>详情</a>";
         } },
         { field: "containers", title: "containers", width: "100", align: "left", formatter: (val, row, index) => {
-            return "<a class='dg-cell-a' href='#'>详细</a>";
+            return "<a class='dg-cell-a' href='#'>详情</a>";
         } },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
@@ -97,10 +97,10 @@
         let cd = "";
         if(list) {
             for(let i = 0; i<list.length; i++){
-                cd += "<span>type: " + list[i].type + "</span></br>";
-                cd += "<span>status: " + list[i].status + "</span></br>";
-                cd += "<span>message: " + list[i].message + "</span></br>";
-                cd += "<span>reason: " + list[i].reason + "</span></br>";
+                cd += "<span class='dg-cell'>type: " + list[i].type + "</span></br>";
+                cd += "<span class='dg-cell'>status: " + list[i].status + "</span></br>";
+                cd += "<span class='dg-cell'>message: " + list[i].message + "</span></br>";
+                cd += "<span class='dg-cell'>reason: " + list[i].reason + "</span></br>";
                 cd += "<p class='dg-cell-line'></p>"
             }
         }
@@ -112,13 +112,13 @@
             let pod = "";
             if(list) {
                 for(let i = 0; i<list.length; i++){
-                    pod += "<span>name: " + list[i].name + "</span></br>";
-                    pod += "<span>image: " + list[i].image + "</span></br>";
-                    pod += "<span>ready: " + list[i].ready + "</span></br>";
-                    pod += "<span>restartCount: " + list[i].restartCount + "</span></br>";
-                    pod += "<span>started: " + list[i].started + "</span></br>";
-                    pod += "<span>message: " + list[i].message + "</span></br>";
-                    pod += "<span>reason: " + list[i].reason + "</span></br>";
+                    pod += "<span class='dg-cell'>name: " + list[i].name + "</span></br>";
+                    pod += "<span class='dg-cell'>image: " + list[i].image + "</span></br>";
+                    pod += "<span class='dg-cell'>ready: " + list[i].ready + "</span></br>";
+                    pod += "<span class='dg-cell'>restartCount: " + list[i].restartCount + "</span></br>";
+                    pod += "<span class='dg-cell'>started: " + list[i].started + "</span></br>";
+                    pod += "<span class='dg-cell'>message: " + list[i].message + "</span></br>";
+                    pod += "<span class='dg-cell'>reason: " + list[i].reason + "</span></br>";
                     pod += "<p class='dg-cell-line'></p>"
                 }
             }
@@ -130,15 +130,15 @@
         let cd = "";
         if(list) {
             for(let i = 0; i<list.length; i++){
-                cd += "<span>name: " + list[i].name + "</span></br>";
-                cd += "<span>image: " + list[i].image + "</span></br>";
-                cd += "<span>request cpu: " + list[i].resCpu + "</span></br>";
-                cd += "<span>limit cpu: " + list[i].limitCpu + "</span></br>";
-                cd += "<span>request memory: " + list[i].resMemory + "</span></br>";
-                cd += "<span>limit memory: " + list[i].limitMemory + "</span></br>";
+                cd += "<span class='dg-cell'>name: " + list[i].name + "</span></br>";
+                cd += "<span class='dg-cell'>image: " + list[i].image + "</span></br>";
+                cd += "<span class='dg-cell'>request cpu: " + list[i].resCpu + "</span></br>";
+                cd += "<span class='dg-cell'>limit cpu: " + list[i].limitCpu + "</span></br>";
+                cd += "<span class='dg-cell'>request memory: " + list[i].resMemory + "</span></br>";
+                cd += "<span class='dg-cell'>limit memory: " + list[i].limitMemory + "</span></br>";
                 let ports = !list[i].ports ? [] : list[i].ports;
                 for(let j = 0; j<ports.length; j++){
-                    cd += "<span>port: " + ports[j].containerPort + "</span></br>";
+                    cd += "<span class='dg-cell'>port: " + ports[j].containerPort + "</span></br>";
                 }
                 cd += "<p class='dg-cell-line'></p>"
             }

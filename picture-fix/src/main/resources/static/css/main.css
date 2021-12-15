@@ -69,7 +69,9 @@ input[type="checkbox"] { cursor: pointer;}
 .tb-search input{height: 32px; line-height: 32px;}
 .tb-search .tb-text{line-height: 32px;}
 .accordion-body{padding:5px 0 !important;}
-.dg-cell{margin:0 13px 0 0;}
+.dg-cell{margin:0 13px 0 0; line-height: 18px !important;}
 .dg-cell-line{border-bottom: 1px #ccc solid;}
 .dg-cell-a{text-decoration:underline !important; color:blue !important;}
 .dg-cell-a:hover{color:red !important;}
+#dlg{background:#eee;}
+#dlg-text{OVERFLOW: auto; height:331px; border: 1px solid #ccc;background:#fff; padding: 13px;}

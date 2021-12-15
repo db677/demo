@@ -14,7 +14,7 @@
 </head>
 
 <body>
-<div id="dlg" class="easyui-dialog" title="info" data-options="iconCls:'icon-info', closed: true, modal: true" style="width:600px;height:400px;padding:13px">
+<div id="dlg" class="easyui-dialog" title="详情" data-options="iconCls:'icon-information', closed: true, modal: true" style="width:600px;height:400px;padding:13px">
     <div id="dlg-text"></div>
 </div>
 <div id="tb">
@@ -35,10 +35,10 @@
         { field: "namespace", title: "namespace", width: "130", align: "left" },
         { field: "replicas", title: "副本数", width: "100", align: "left" },
         { field: "container", title: "container", width: "130", align: "left", formatter: (val, row, index) => {
-            return "<a class='dg-cell-a' href='#'>详细</a>";
+            return "<a class='dg-cell-a' href='#'>详情</a>";
         } },
         { field: "conditions", title: "conditions", width: "130", align: "left", formatter: (val, row, index) => {
-            return "<a class='dg-cell-a' href='#'>详细</a>";
+            return "<a class='dg-cell-a' href='#'>详情</a>";
         } },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
@@ -88,12 +88,12 @@
         let cpu = "";
         if(list) {
             for(let i = 0; i<list.length; i++){
-                cpu += "<span class='dg-cell' style='color:green'>request cpu: " + list[i].resCpu + "</span>";
-                cpu += "<span style='color:red'>limit cpu: " + list[i].limitCpu + "</span></br>";
-                cpu += "<span class='dg-cell' style='color:green'>request memory: " + list[i].resMemory + "</span>";
-                cpu += "<span style='color:red'>limit memory: " + list[i].limitMemory + "</span></br>";
+                cpu += "<span class='dg-cell' style='color:green'>request cpu: " + list[i].resCpu + "</span></br>";
+                cpu += "<span class='dg-cell' style='color:red'>limit cpu: " + list[i].limitCpu + "</span></br>";
+                cpu += "<span class='dg-cell' style='color:green'>request memory: " + list[i].resMemory + "</span></br>";
+                cpu += "<span class='dg-cell' style='color:red'>limit memory: " + list[i].limitMemory + "</span></br>";
                 cpu += "<span class='dg-cell' >port: " + list[i].containerPort + "</span></br>";
-                cpu += "<span class='dg-cell' >image: " + list[i].image + "</span>";
+                cpu += "<span class='dg-cell' >image: " + list[i].image + "</span></br>";
             }
         }
         $("#dlg-text").html(cpu);
@@ -105,9 +105,9 @@
         if(list) {
             for(let i = 0; i<list.length; i++){
                 cd += "<span class='dg-cell'>type: " + list[i].type + "</span></br>";
-                cd += "<span>status: " + list[i].status + "</span></br>";
-                cd += "<span>message: " + list[i].message + "</span></br>";
-                cd += "<span>reason: " + list[i].reason + "</span></br>";
+                cd += "<span class='dg-cell' >status: " + list[i].status + "</span></br>";
+                cd += "<span class='dg-cell' >message: " + list[i].message + "</span></br>";
+                cd += "<span class='dg-cell' >reason: " + list[i].reason + "</span></br>";
                 cd += "<p class='dg-cell-line'></p>"
             }
         }
