@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>节点管理</title>
+    <title>pod管理</title>
     <link rel="stylesheet" type="text/css" th:href="@{/static/easyui/themes/default/easyui.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/main.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/icon.css}" />
@@ -16,7 +16,7 @@
 <body>
 <div id="tb">
     <div class="tb-search">
-        <span class="tb-text">节点名称:</span>
+        <span class="tb-text">名称:</span>
         <input class="easyui-textbox" style="width:160px;height:32px">
 
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="search()">搜索</a>
@@ -28,14 +28,50 @@
 
     };
     let columnsDef = [
-        { field: "name", title: "名称", width: "130", align: "left" },
-        { field: "kubeletVersion", title: "k8s版本", width: "130", align: "left" },
-        { field: "capacityCpu", title: "cpu", width: "100", align: "left" },
-        { field: "allocatableCpu", title: "可用cpu", width: "100", align: "left" },
-        { field: "capacityMemory", title: "内存", width: "130", align: "left" },
-        { field: "allocatableMemory", title: "可用内存", width: "130", align: "left" },
-        { field: "operatingSystem", title: "操作系统", width: "130", align: "left" },
-        { field: "osImage", title: "系统镜像", width: "200", align: "left" },
+        { field: "name", title: "名称", width: "200", align: "left" },
+        { field: "namespace", title: "namespace", width: "130", align: "left" },
+        { field: "nodeName", title: "节点", width: "130", align: "left" },
+        { field: "hostIp", title: "主机ip", width: "130", align: "left" },
+        { field: "podIp", title: "pod ip", width: "130", align: "left" },
+        { field: "phase", title: "运行状态", width: "100", align: "left" },
+        { field: "containersStatus", title: "容器状态", width: "100", align: "left" },
+        { field: "pod", title: "pod", width: "660", align: "left", formatter: (val, row, index) => {
+            let list = row.podStatusList;
+            let pod = "";
+            if(list) {
+                for(let i = 0; i<list.length; i++){
+                    pod += "<span>name: " + list[i].name + "</span></br>";
+                    pod += "<span>image: " + list[i].image + "</span></br>";
+                    pod += "<span>ready: " + list[i].ready + "</span></br>";
+                    pod += "<span>restartCount: " + list[i].restartCount + "</span></br>";
+                    pod += "<span>started: " + list[i].started + "</span></br>";
+                    pod += "<span>message: " + list[i].message + "</span></br>";
+                    pod += "<span>reason: " + list[i].reason + "</span></br>";
+                    pod += "<p class='dg-cell-line'></p>"
+                }
+            }
+            return pod;
+        } },
+        { field: "containers", title: "containers", width: "660", align: "left", formatter: (val, row, index) => {
+            let list = row.containers;
+            let cd = "";
+            if(list) {
+                for(let i = 0; i<list.length; i++){
+                    cd += "<span>name: " + list[i].name + "</span></br>";
+                    cd += "<span>image: " + list[i].image + "</span></br>";
+                    cd += "<span>request cpu: " + list[i].resCpu + "</span></br>";
+                    cd += "<span>limit cpu: " + list[i].limitCpu + "</span></br>";
+                    cd += "<span>request memory: " + list[i].resMemory + "</span></br>";
+                    cd += "<span>limit memory: " + list[i].limitMemory + "</span></br>";
+                    let ports = !list[i].ports ? [] : list[i].ports;
+                    for(let j = 0; j<ports.length; j++){
+                        cd += "<span>port: " + ports[j].containerPort + "</span></br>";
+                    }
+                    cd += "<p class='dg-cell-line'></p>"
+                }
+            }
+            return cd;
+        } },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
     let loadData = data => {
@@ -73,7 +109,7 @@
         });
     }
     $(() => {
-        $.get("/k8s/node", response => {
+        $.get("/k8s/pod", response => {
             loadData(response.data);
         });
     })

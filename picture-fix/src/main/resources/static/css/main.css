@@ -70,3 +70,4 @@ input[type="checkbox"] { cursor: pointer;}
 .tb-search .tb-text{line-height: 32px;}
 .accordion-body{padding:5px 0 !important;}
 .dg-cell{margin:0 13px 0 0;}
+.dg-cell-line{border-bottom: 1px #ccc solid;}

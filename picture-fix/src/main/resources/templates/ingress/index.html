@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>节点管理</title>
+    <title>ingress管理</title>
     <link rel="stylesheet" type="text/css" th:href="@{/static/easyui/themes/default/easyui.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/main.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/icon.css}" />
@@ -16,7 +16,7 @@
 <body>
 <div id="tb">
     <div class="tb-search">
-        <span class="tb-text">节点名称:</span>
+        <span class="tb-text">名称:</span>
         <input class="easyui-textbox" style="width:160px;height:32px">
 
         <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="search()">搜索</a>
@@ -29,13 +29,8 @@
     };
     let columnsDef = [
         { field: "name", title: "名称", width: "130", align: "left" },
-        { field: "kubeletVersion", title: "k8s版本", width: "130", align: "left" },
-        { field: "capacityCpu", title: "cpu", width: "100", align: "left" },
-        { field: "allocatableCpu", title: "可用cpu", width: "100", align: "left" },
-        { field: "capacityMemory", title: "内存", width: "130", align: "left" },
-        { field: "allocatableMemory", title: "可用内存", width: "130", align: "left" },
-        { field: "operatingSystem", title: "操作系统", width: "130", align: "left" },
-        { field: "osImage", title: "系统镜像", width: "200", align: "left" },
+        { field: "namespace", title: "namespace", width: "130", align: "left" },
+        { field: "resourceVersion", title: "版本", width: "200", align: "left" },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
     let loadData = data => {
@@ -73,7 +68,7 @@
         });
     }
     $(() => {
-        $.get("/k8s/node", response => {
+        $.get("/k8s/ingress", response => {
             loadData(response.data);
         });
     })

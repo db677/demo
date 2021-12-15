@@ -31,31 +31,35 @@
         { field: "name", title: "名称", width: "130", align: "left" },
         { field: "namespace", title: "namespace", width: "130", align: "left" },
         { field: "replicas", title: "副本数", width: "100", align: "left" },
-        { field: "cpu", title: "cpu(核)", width: "200", align: "left", formatter: (val, row, index) => {
+        { field: "cpu", title: "容器信息", width: "660", align: "left", formatter: (val, row, index) => {
             let list = row.containerList;
             let cpu = "";
             if(list) {
                 for(let i = 0; i<list.length; i++){
-                    cpu += "<span class='dg-cell' style='color:green'>request: " + list[i].resCpu + "</span>";
-                    cpu += "<span style='color:red'>limit: " + list[i].limitCpu + "</span>";
+                    cpu += "<span class='dg-cell' style='color:green'>request cpu: " + list[i].resCpu + "</span>";
+                    cpu += "<span style='color:red'>limit cpu: " + list[i].limitCpu + "</span></br>";
+                    cpu += "<span class='dg-cell' style='color:green'>request memory: " + list[i].resMemory + "</span>";
+                    cpu += "<span style='color:red'>limit memory: " + list[i].limitMemory + "</span></br>";
+                    cpu += "<span class='dg-cell' >port: " + list[i].containerPort + "</span></br>";
+                    cpu += "<span class='dg-cell' >image: " + list[i].image + "</span>";
                 }
             }
             return cpu;
         } },
-        { field: "memory", title: "内存(MB)", width: "230", align: "left", formatter: (val, row, index) => {
-            let list = row.containerList;
-            let memory = "";
+        { field: "conditions", title: "conditions", width: "660", align: "left", formatter: (val, row, index) => {
+            let list = row.conditionsList;
+            let cd = "";
             if(list) {
                 for(let i = 0; i<list.length; i++){
-                    memory += "<span class='dg-cell' style='color:green'>request: " + list[i].resMemory + "</span>";
-                    memory += "<span style='color:red'>limit: " + list[i].limitMemory + "</span>";
+                    cd += "<span class='dg-cell'>type: " + list[i].type + "</span></br>";
+                    cd += "<span>status: " + list[i].status + "</span></br>";
+                    cd += "<span>message: " + list[i].message + "</span></br>";
+                    cd += "<span>reason: " + list[i].reason + "</span></br>";
+                    cd += "<p class='dg-cell-line'></p>"
                 }
             }
-            return memory;
+            return cd;
         } },
-        { field: "allocatableMemory", title: "可用内存", width: "130", align: "left" },
-        { field: "operatingSystem", title: "操作系统", width: "130", align: "left" },
-        { field: "osImage", title: "系统镜像", width: "200", align: "left" },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
     let loadData = data => {
