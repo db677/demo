@@ -14,6 +14,9 @@
 </head>
 
 <body>
+<div id="dlg" class="easyui-dialog" title="info" data-options="iconCls:'icon-info', closed: true, modal: true" style="width:600px;height:400px;padding:13px">
+	<div id="dlg-text"></div>
+</div>
 <div id="tb">
     <div class="tb-search">
         <span class="tb-text">名称:</span>
@@ -35,42 +38,14 @@
         { field: "podIp", title: "pod ip", width: "130", align: "left" },
         { field: "phase", title: "运行状态", width: "100", align: "left" },
         { field: "containersStatus", title: "容器状态", width: "100", align: "left" },
-        { field: "pod", title: "pod", width: "660", align: "left", formatter: (val, row, index) => {
-            let list = row.podStatusList;
-            let pod = "";
-            if(list) {
-                for(let i = 0; i<list.length; i++){
-                    pod += "<span>name: " + list[i].name + "</span></br>";
-                    pod += "<span>image: " + list[i].image + "</span></br>";
-                    pod += "<span>ready: " + list[i].ready + "</span></br>";
-                    pod += "<span>restartCount: " + list[i].restartCount + "</span></br>";
-                    pod += "<span>started: " + list[i].started + "</span></br>";
-                    pod += "<span>message: " + list[i].message + "</span></br>";
-                    pod += "<span>reason: " + list[i].reason + "</span></br>";
-                    pod += "<p class='dg-cell-line'></p>"
-                }
-            }
-            return pod;
+        { field: "pod", title: "pod", width: "100", align: "left", formatter: (val, row, index) => {
+            return "<a class='dg-cell-a' href='#'>详细</a>";
         } },
-        { field: "containers", title: "containers", width: "660", align: "left", formatter: (val, row, index) => {
-            let list = row.containers;
-            let cd = "";
-            if(list) {
-                for(let i = 0; i<list.length; i++){
-                    cd += "<span>name: " + list[i].name + "</span></br>";
-                    cd += "<span>image: " + list[i].image + "</span></br>";
-                    cd += "<span>request cpu: " + list[i].resCpu + "</span></br>";
-                    cd += "<span>limit cpu: " + list[i].limitCpu + "</span></br>";
-                    cd += "<span>request memory: " + list[i].resMemory + "</span></br>";
-                    cd += "<span>limit memory: " + list[i].limitMemory + "</span></br>";
-                    let ports = !list[i].ports ? [] : list[i].ports;
-                    for(let j = 0; j<ports.length; j++){
-                        cd += "<span>port: " + ports[j].containerPort + "</span></br>";
-                    }
-                    cd += "<p class='dg-cell-line'></p>"
-                }
-            }
-            return cd;
+        { field: "conditions", title: "conditions", width: "100", align: "left", formatter: (val, row, index) => {
+            return "<a class='dg-cell-a' href='#'>详细</a>";
+        } },
+        { field: "containers", title: "containers", width: "100", align: "left", formatter: (val, row, index) => {
+            return "<a class='dg-cell-a' href='#'>详细</a>";
         } },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
@@ -91,8 +66,17 @@
             onClickRow: function (index, row) {
                 var d_id = row["d_id"];
             },
-            onClickCell: function (rowIndex, field, value) {
+            onClickCell: function (index, field, value) {
                 IsCheckFlag = false;
+                let rows = $('#dg').datagrid('getRows');
+                let row = rows[index];
+                if("conditions" === field){
+                    openDlg(row);
+                } else if("pod" === field){
+                    openPodInfoDlg(row);
+                } else if("containers" === field){
+                    openContainerDlg(row);
+                }
             },
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
@@ -108,6 +92,60 @@
             }
         });
     }
+    let openDlg = (row) => {
+        let list = row.conditions;
+        let cd = "";
+        if(list) {
+            for(let i = 0; i<list.length; i++){
+                cd += "<span>type: " + list[i].type + "</span></br>";
+                cd += "<span>status: " + list[i].status + "</span></br>";
+                cd += "<span>message: " + list[i].message + "</span></br>";
+                cd += "<span>reason: " + list[i].reason + "</span></br>";
+                cd += "<p class='dg-cell-line'></p>"
+            }
+        }
+        $("#dlg-text").html(cd);
+        $("#dlg").dialog("open");
+    };
+    let openPodInfoDlg = (row) => {
+        let list = row.podStatusList;
+            let pod = "";
+            if(list) {
+                for(let i = 0; i<list.length; i++){
+                    pod += "<span>name: " + list[i].name + "</span></br>";
+                    pod += "<span>image: " + list[i].image + "</span></br>";
+                    pod += "<span>ready: " + list[i].ready + "</span></br>";
+                    pod += "<span>restartCount: " + list[i].restartCount + "</span></br>";
+                    pod += "<span>started: " + list[i].started + "</span></br>";
+                    pod += "<span>message: " + list[i].message + "</span></br>";
+                    pod += "<span>reason: " + list[i].reason + "</span></br>";
+                    pod += "<p class='dg-cell-line'></p>"
+                }
+            }
+        $("#dlg-text").html(pod);
+        $("#dlg").dialog("open");
+    };
+    let openContainerDlg = (row) => {
+        let list = row.containers;
+        let cd = "";
+        if(list) {
+            for(let i = 0; i<list.length; i++){
+                cd += "<span>name: " + list[i].name + "</span></br>";
+                cd += "<span>image: " + list[i].image + "</span></br>";
+                cd += "<span>request cpu: " + list[i].resCpu + "</span></br>";
+                cd += "<span>limit cpu: " + list[i].limitCpu + "</span></br>";
+                cd += "<span>request memory: " + list[i].resMemory + "</span></br>";
+                cd += "<span>limit memory: " + list[i].limitMemory + "</span></br>";
+                let ports = !list[i].ports ? [] : list[i].ports;
+                for(let j = 0; j<ports.length; j++){
+                    cd += "<span>port: " + ports[j].containerPort + "</span></br>";
+                }
+                cd += "<p class='dg-cell-line'></p>"
+            }
+        }
+        $("#dlg-text").html(cd);
+        $("#dlg").dialog("open");
+    };
     $(() => {
         $.get("/k8s/pod", response => {
             loadData(response.data);

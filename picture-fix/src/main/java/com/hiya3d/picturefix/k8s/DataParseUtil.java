@@ -15,6 +15,7 @@ import com.hiya3d.picturefix.k8s.vo.deployment.DeploymentInfoVo;
 import com.hiya3d.picturefix.k8s.vo.deployment.VolumeMountVo;
 import com.hiya3d.picturefix.k8s.vo.ingress.IngressInfoVo;
 import com.hiya3d.picturefix.k8s.vo.node.NodeInfoVo;
+import com.hiya3d.picturefix.k8s.vo.pod.PodConditionVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodContainerVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodInfoVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodPortVo;
@@ -152,14 +153,22 @@ public class DataParseUtil {
 			info.setPhase(status.getPhase());
 			info.setPodIp(status.getPodIP());
 		}
+		List<PodConditionVo> conditionVoList = new LinkedList<>();
 		if(status != null && status.getConditions() != null) {
 			List<V1PodCondition> conditionList = status.getConditions();
 			for(V1PodCondition podCondition: conditionList) {
 				if(PodInfoVo.ContainersReady.equals(podCondition.getType())) {
 					info.setContainersStatus(podCondition.getStatus());
 				}
+				PodConditionVo pcVo = new PodConditionVo();
+				pcVo.setMessage(podCondition.getMessage());
+				pcVo.setType(podCondition.getType());
+				pcVo.setReason(podCondition.getReason());
+				pcVo.setStatus(podCondition.getStatus());
+				conditionVoList.add(pcVo);
 			}
 		}
+		info.setConditions(conditionVoList);
 		List<PodStatusVo> podStatusList = new LinkedList<>();
 		if(status != null && status.getContainerStatuses() != null) {
 			List<V1ContainerStatus> statusList = status.getContainerStatuses();

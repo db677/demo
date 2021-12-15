@@ -45,5 +45,7 @@ public class PodInfoVo implements Serializable {
 	
 	@ApiModelProperty("容器信息")
 	private List<PodContainerVo> containers;
+	
+	private List<PodConditionVo> conditions;
 
 }

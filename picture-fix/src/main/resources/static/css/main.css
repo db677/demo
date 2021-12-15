@@ -71,3 +71,5 @@ input[type="checkbox"] { cursor: pointer;}
 .accordion-body{padding:5px 0 !important;}
 .dg-cell{margin:0 13px 0 0;}
 .dg-cell-line{border-bottom: 1px #ccc solid;}
+.dg-cell-a{text-decoration:underline !important; color:blue !important;}
+.dg-cell-a:hover{color:red !important;}

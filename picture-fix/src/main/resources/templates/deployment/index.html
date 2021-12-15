@@ -14,6 +14,9 @@
 </head>
 
 <body>
+<div id="dlg" class="easyui-dialog" title="info" data-options="iconCls:'icon-info', closed: true, modal: true" style="width:600px;height:400px;padding:13px">
+    <div id="dlg-text"></div>
+</div>
 <div id="tb">
     <div class="tb-search">
         <span class="tb-text">名称:</span>
@@ -31,34 +34,11 @@
         { field: "name", title: "名称", width: "130", align: "left" },
         { field: "namespace", title: "namespace", width: "130", align: "left" },
         { field: "replicas", title: "副本数", width: "100", align: "left" },
-        { field: "cpu", title: "容器信息", width: "660", align: "left", formatter: (val, row, index) => {
-            let list = row.containerList;
-            let cpu = "";
-            if(list) {
-                for(let i = 0; i<list.length; i++){
-                    cpu += "<span class='dg-cell' style='color:green'>request cpu: " + list[i].resCpu + "</span>";
-                    cpu += "<span style='color:red'>limit cpu: " + list[i].limitCpu + "</span></br>";
-                    cpu += "<span class='dg-cell' style='color:green'>request memory: " + list[i].resMemory + "</span>";
-                    cpu += "<span style='color:red'>limit memory: " + list[i].limitMemory + "</span></br>";
-                    cpu += "<span class='dg-cell' >port: " + list[i].containerPort + "</span></br>";
-                    cpu += "<span class='dg-cell' >image: " + list[i].image + "</span>";
-                }
-            }
-            return cpu;
+        { field: "container", title: "container", width: "130", align: "left", formatter: (val, row, index) => {
+            return "<a class='dg-cell-a' href='#'>详细</a>";
         } },
-        { field: "conditions", title: "conditions", width: "660", align: "left", formatter: (val, row, index) => {
-            let list = row.conditionsList;
-            let cd = "";
-            if(list) {
-                for(let i = 0; i<list.length; i++){
-                    cd += "<span class='dg-cell'>type: " + list[i].type + "</span></br>";
-                    cd += "<span>status: " + list[i].status + "</span></br>";
-                    cd += "<span>message: " + list[i].message + "</span></br>";
-                    cd += "<span>reason: " + list[i].reason + "</span></br>";
-                    cd += "<p class='dg-cell-line'></p>"
-                }
-            }
-            return cd;
+        { field: "conditions", title: "conditions", width: "130", align: "left", formatter: (val, row, index) => {
+            return "<a class='dg-cell-a' href='#'>详细</a>";
         } },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
@@ -79,8 +59,15 @@
             onClickRow: function (index, row) {
                 var d_id = row["d_id"];
             },
-            onClickCell: function (rowIndex, field, value) {
+            onClickCell: function (index, field, value) {
                 IsCheckFlag = false;
+                let rows = $('#dg').datagrid('getRows');
+                let row = rows[index];
+                if("conditions" === field){
+                    openConditionDlg(row);
+                } else if("container" === field){
+                    openContainerDlg(row);
+                }
             },
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
@@ -95,6 +82,37 @@
                 }
             }
         });
+    }
+    let openContainerDlg = (row) => {
+        let list = row.containerList;
+        let cpu = "";
+        if(list) {
+            for(let i = 0; i<list.length; i++){
+                cpu += "<span class='dg-cell' style='color:green'>request cpu: " + list[i].resCpu + "</span>";
+                cpu += "<span style='color:red'>limit cpu: " + list[i].limitCpu + "</span></br>";
+                cpu += "<span class='dg-cell' style='color:green'>request memory: " + list[i].resMemory + "</span>";
+                cpu += "<span style='color:red'>limit memory: " + list[i].limitMemory + "</span></br>";
+                cpu += "<span class='dg-cell' >port: " + list[i].containerPort + "</span></br>";
+                cpu += "<span class='dg-cell' >image: " + list[i].image + "</span>";
+            }
+        }
+        $("#dlg-text").html(cpu);
+        $("#dlg").dialog("open");
+    }
+    let openConditionDlg = (row) => {
+        let list = row.conditionsList;
+        let cd = "";
+        if(list) {
+            for(let i = 0; i<list.length; i++){
+                cd += "<span class='dg-cell'>type: " + list[i].type + "</span></br>";
+                cd += "<span>status: " + list[i].status + "</span></br>";
+                cd += "<span>message: " + list[i].message + "</span></br>";
+                cd += "<span>reason: " + list[i].reason + "</span></br>";
+                cd += "<p class='dg-cell-line'></p>"
+            }
+        }
+        $("#dlg-text").html(cd);
+        $("#dlg").dialog("open");
     }
     $(() => {
         $.get("/k8s/deployment", response => {
