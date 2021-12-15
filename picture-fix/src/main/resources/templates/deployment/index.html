@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>deployment管理</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/easyui/themes/default/easyui.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/main.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/icon.css}" />
+    <link th:href="@{/static/easyui/themes/icon.css}" rel="stylesheet" />
+    <script th:src="@{/static/easyui/jquery.min.js}"></script>
+    <script th:src="@{/static/easyui/jquery.easyui.min.js}"></script>
+    <script th:src="@{/static/easyui/easyui-lang-zh_CN.js}"></script>
+</head>
+
+<body>
+<div id="tb">
+    <div class="tb-search">
+        <span class="tb-text">名称:</span>
+        <input class="easyui-textbox" style="width:160px;height:32px">
+
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="search()">搜索</a>
+    </div>
+</div>
+<div id="dg"></div>
+<script type="text/javascript" th:inline="none">
+    let search = () => {
+
+    };
+    let columnsDef = [
+        { field: "name", title: "名称", width: "130", align: "left" },
+        { field: "namespace", title: "namespace", width: "130", align: "left" },
+        { field: "replicas", title: "副本数", width: "100", align: "left" },
+        { field: "cpu", title: "cpu(核)", width: "200", align: "left", formatter: (val, row, index) => {
+            let list = row.containerList;
+            let cpu = "";
+            if(list) {
+                for(let i = 0; i<list.length; i++){
+                    cpu += "<span class='dg-cell' style='color:green'>request: " + list[i].resCpu + "</span>";
+                    cpu += "<span style='color:red'>limit: " + list[i].limitCpu + "</span>";
+                }
+            }
+            return cpu;
+        } },
+        { field: "memory", title: "内存(MB)", width: "230", align: "left", formatter: (val, row, index) => {
+            let list = row.containerList;
+            let memory = "";
+            if(list) {
+                for(let i = 0; i<list.length; i++){
+                    memory += "<span class='dg-cell' style='color:green'>request: " + list[i].resMemory + "</span>";
+                    memory += "<span style='color:red'>limit: " + list[i].limitMemory + "</span>";
+                }
+            }
+            return memory;
+        } },
+        { field: "allocatableMemory", title: "可用内存", width: "130", align: "left" },
+        { field: "operatingSystem", title: "操作系统", width: "130", align: "left" },
+        { field: "osImage", title: "系统镜像", width: "200", align: "left" },
+        { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
+    ];
+    let loadData = data => {
+        $("#dg").datagrid({
+            title: "列表",
+            width: "100%",
+            height: "100%",
+            columns: [ columnsDef ],
+            data: data,
+            striped: true,     //交替行换色
+            rownumbers: true,  //行号
+            pagination: true,  //显示底部分页
+            fitColumns: true,//自动适应。先给列随便加个宽度
+            toolbar: "#tb",
+            checkOnSelect: false, //true，当用户点击行的时候该复选框就会被选中或取消选中。
+            selectOnCheck: true, //true，单击复选框将永远选择行。
+            onClickRow: function (index, row) {
+                var d_id = row["d_id"];
+            },
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#dg").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#dg").datagrid("selectRow", rowIndex);
+                }
+            }
+        });
+    }
+    $(() => {
+        $.get("/k8s/deployment", response => {
+            loadData(response.data);
+        });
+    })
+</script>
+</body>
+
+</html>
