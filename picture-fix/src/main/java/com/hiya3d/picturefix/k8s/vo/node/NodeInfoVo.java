@@ -2,6 +2,7 @@ package com.hiya3d.picturefix.k8s.vo.node;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -47,5 +48,7 @@ public class NodeInfoVo implements Serializable {
 	
 	@ApiModelProperty("创建时间")
 	private String creationTimestamp;
+	
+	private List<NodeConditionVo> conditions;
 
 }

@@ -14,6 +14,7 @@ import com.hiya3d.picturefix.k8s.vo.deployment.ContainerInfoVo;
 import com.hiya3d.picturefix.k8s.vo.deployment.DeploymentInfoVo;
 import com.hiya3d.picturefix.k8s.vo.deployment.VolumeMountVo;
 import com.hiya3d.picturefix.k8s.vo.ingress.IngressInfoVo;
+import com.hiya3d.picturefix.k8s.vo.node.NodeConditionVo;
 import com.hiya3d.picturefix.k8s.vo.node.NodeInfoVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodConditionVo;
 import com.hiya3d.picturefix.k8s.vo.pod.PodContainerVo;
@@ -35,6 +36,7 @@ import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentCondition;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
 import io.kubernetes.client.openapi.models.V1Node;
+import io.kubernetes.client.openapi.models.V1NodeCondition;
 import io.kubernetes.client.openapi.models.V1NodeSystemInfo;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
@@ -394,6 +396,22 @@ public class DataParseUtil {
 				node.setCapacityPods(pods.getNumber());
 			}
 		}
+		/**
+		 * conditions
+		 */
+		List<NodeConditionVo> conditions = new LinkedList<>();
+		if(item.getStatus() != null && item.getStatus().getConditions() != null) {
+			List<V1NodeCondition> conditionList = item.getStatus().getConditions();
+			for(V1NodeCondition cd: conditionList) {
+				NodeConditionVo cdVo = new NodeConditionVo();
+				cdVo.setMessage(cd.getMessage());
+				cdVo.setReason(cd.getReason());
+				cdVo.setStatus(cd.getStatus());
+				cdVo.setType(cd.getType());
+				conditions.add(cdVo);
+			}
+		}
+		node.setConditions(conditions);
 	}
 
 	/**

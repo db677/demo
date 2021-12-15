@@ -14,6 +14,9 @@
 </head>
 
 <body>
+<div id="dlg" class="easyui-dialog" title="详情" data-options="iconCls:'icon-information', closed: true, modal: true" style="width:600px;height:400px;padding:13px">
+    <div id="dlg-text"></div>
+</div>
 <div id="tb">
     <div class="tb-search">
         <span class="tb-text">名称:</span>
@@ -36,6 +39,9 @@
         { field: "allocatableMemory", title: "可用内存", width: "130", align: "left" },
         { field: "operatingSystem", title: "操作系统", width: "130", align: "left" },
         { field: "osImage", title: "系统镜像", width: "200", align: "left" },
+        { field: "conditions", title: "conditions", width: "130", align: "left", formatter: (val, row, index) => {
+            return "<a class='dg-cell-a' href='#'>详情</a>";
+        } },
         { field: "creationTimestamp", title: "创建时间", width: "160", align: "left" }
     ];
     let loadData = data => {
@@ -55,8 +61,13 @@
             onClickRow: function (index, row) {
                 var d_id = row["d_id"];
             },
-            onClickCell: function (rowIndex, field, value) {
+            onClickCell: function (index, field, value) {
                 IsCheckFlag = false;
+                let rows = $('#dg').datagrid('getRows');
+                let row = rows[index];
+                if("conditions" === field){
+                    openConditionDlg(row);
+                }
             },
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
@@ -71,6 +82,21 @@
                 }
             }
         });
+    }
+    let openConditionDlg = (row) => {
+        let list = row.conditions;
+        let cd = "";
+        if(list) {
+            for(let i = 0; i<list.length; i++){
+                cd += "<span class='dg-cell'>type: " + list[i].type + "</span></br>";
+                cd += "<span class='dg-cell' >status: " + list[i].status + "</span></br>";
+                cd += "<span class='dg-cell' >message: " + list[i].message + "</span></br>";
+                cd += "<span class='dg-cell' >reason: " + list[i].reason + "</span></br>";
+                cd += "<p class='dg-cell-line'></p>"
+            }
+        }
+        $("#dlg-text").html(cd);
+        $("#dlg").dialog("open");
     }
     $(() => {
         $.get("/k8s/node", response => {
