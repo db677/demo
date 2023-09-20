@@ -32,7 +32,7 @@ public class ServiceController {
 	@PostMapping("/service/create")
 	public Result<?> create(@RequestBody ServiceReq req) {
 		req.setContainerPort(9999);
-		req.setName("picture-fix");
+		req.setName("k8s-test");
 		req.setNamespace("dev");
 		K8sUtil.createService(req);
 		
@@ -43,7 +43,7 @@ public class ServiceController {
 	@PostMapping("/service/update")
 	public Result<?> update(@RequestBody ServiceReq req) {
 		req.setContainerPort(9999);
-		req.setName("picture-fix");
+		req.setName("k8s-test");
 		req.setNamespace("dev");
 		K8sUtil.updateService(req);
 		
@@ -53,7 +53,7 @@ public class ServiceController {
 	@ApiOperation("删除")
 	@PostMapping("/service/delete")
 	public Result<?> delete(@RequestBody ServiceReq req) {
-		req.setName("picture-fix");
+		req.setName("k8s-test");
 		req.setNamespace("dev");
 		K8sUtil.deleteService(req);
 		

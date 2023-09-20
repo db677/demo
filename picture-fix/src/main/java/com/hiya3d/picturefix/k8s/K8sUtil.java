@@ -702,9 +702,9 @@ public class K8sUtil {
 
 	private static ApiClient defaultClient() {
 		try {
-			client = new ClientBuilder().setBasePath("https://119.91.193.32:6443").setVerifyingSsl(false)
+			client = new ClientBuilder().setBasePath("https://43.139.51.7:6443").setVerifyingSsl(false)
 					.setAuthentication(new AccessTokenAuthentication(
-							"eyJhbGciOiJSUzI1NiIsImtpZCI6IksxUU9NN0h5dXYwTGxEU3dlUTFXM0RxU2dUTE9BYTJiRm9CSm04ckVQYUUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJrOHMtYXV0aG9yaXplLXRva2VuLW41bndqIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6Ims4cy1hdXRob3JpemUiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJjZDEwNjI0Yi05Y2YzLTQxODctYTdhMy0wZmMwNGJhZjE0MzEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1zeXN0ZW06azhzLWF1dGhvcml6ZSJ9.fyEWWm2NxCqRMc5WpZNf4AAXcuHAvC-y3RbrjfeEciHVXytl-LxwHOBn_wz_aSfx45N777yI3ttWoxcS-d_HL2Jgw3XaFn0qNQt7IHQ7z4a16iY6S9PwpjAAf9ngkZlrdVmYBiEBGkAHSmepH33ENrAJ0bDoUU-SC4ZEv9EASuewdOFscss9iKJPSO1IV6eRG3aXyX-lOhNWDfKv5Ja8--HLIMx-dTNlgtUKnPjzHeBLbN1eTHc_5_qD1zK_7CSuyy7arhS-VTRy5YWs3uBsba86b4bU63T8wdjAKW7skHtPRCuYjJaHsrIP4yzm7PGpPBojWRyh4NbRfKpk27--vA"))
+							"eyJhbGciOiJSUzI1NiIsImtpZCI6InhNODRqeE1Sc1VxeTR0RHhPRmY2aU0tR3lwcjRZQ2tYbmxiVC1qMUpsR2cifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLTJ4MjlmIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIxZTRkNDVlZS0zM2ZjLTQ1NzMtYTVlZS04NTQzY2EyY2RhMTgiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1zeXN0ZW06YWRtaW4tdXNlciJ9.cQFzcHI4Tmt4h-nqU_e8_utinliWWPDd4hBFXt8Q1D-DT-bgOVFBcn3T4AEorn3AAgQKFFjc3BcCH3y_pYx7mX43n1z-zN8ga5a--L5_M8A1KFDkP0bwo0GxcE-UE158GTXx-3uSPuDl-dL-1-q5zzMCQbVufzOvxhOGHQK60MXxPNiffAdwcHd747Ez8PaPpww6Xm9K6a0NlsL_ykYv8TaUXZe4nOAnOLOIZ4is-IBUK3SYz9-Sg_VhoRBLilSGK9uL_mIIO5kTZU11j70PBlR9Cht68rJOl7hAXcFpM_9nVQc01CjqjASgIgLAra1Gh5yjY23DmyYprqSwTeJDCw"))
 					.build();
 			Configuration.setDefaultApiClient(client);
 			return client;
@@ -730,14 +730,3 @@ public class K8sUtil {
 		throw new CustomException(json.getString("message"));
 	}
 }
-
-/**
- * Resource resource = new ClassPathResource("kubeconfig"); String tempPath =
- * System.getProperty("java.io.tmpdir") + "tomcat_" +
- * System.currentTimeMillis(); String tempFile = tempPath + File.separator +
- * "kubeconfig"; File file = new File(tempPath); if (!file.exists()) {
- * file.mkdirs(); } IOUtils.copy(resource.getInputStream(), new
- * FileOutputStream(new File(tempFile))); client =
- * ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new
- * FileReader(tempFile))).build(); Configuration.setDefaultApiClient(client);
- */
