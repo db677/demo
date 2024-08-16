@@ -1,0 +1,13 @@
+FROM java
+MAINTAINER admin@xxx.com
+
+RUN mkdir /deploy
+RUN mkdir /deploy/logs
+ENV MYPATH /deploy
+WORKDIR $MYPATH
+    
+ADD k8s-test.jar $MYPATH/   
+
+
+ENTRYPOINT ["java", "-Xms300m", "-Xmx300m", "-jar", "/deploy/k8s-test.jar"]
+
