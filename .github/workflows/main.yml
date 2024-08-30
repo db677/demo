@@ -12,11 +12,10 @@ on:
   
 jobs:
   build:
-    runs-on: unbuntu-latest
+    runs-on: self-hosted    #unbuntu-latest
 
     steps:
       - name: Run a on-line script
         run: echo Hello, world~
-      - name: mvn install
-        run: mvn install
+
       
