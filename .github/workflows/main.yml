@@ -15,7 +15,7 @@ jobs:
     runs-on: self-hosted    #unbuntu-latest
 
     steps:
-      - name Set up the working directory
+      - name: Set up the working directory
         run: |
           mkdir my_directory
         working-directory: ./my_directory
