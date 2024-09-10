@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Run a script
         run: |
-          cd /githubactions/demo
+          cd /githubactions/demo,
           ./test.sh
       
 
