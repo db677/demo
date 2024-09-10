@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: Set up the working directory
         run: |
-          mkdir -p my_directory
-        working-directory: ./my_directory
+          mkdir -p demo
+        working-directory: ./demo
         
       - name: Run a script
         run: |
