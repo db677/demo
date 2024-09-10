@@ -16,8 +16,8 @@ jobs:
 
     steps:
       - name: Set up the working directory
-        #run: |
-        #  mkdir -p demo
+        run: |
+          mkdir -p demo
         working-directory: /githubactions/demo
         
       - name: Run a script
