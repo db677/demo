@@ -15,10 +15,10 @@ jobs:
     runs-on: self-hosted    #unbuntu-latest
 
     steps:
-      - name: Set up the working directory
-        run: |
-          mkdir -p demo
-        working-directory: /githubactions/demo
+      #- name: Set up the working directory
+      #  run: |
+      #    mkdir -p demo
+      #  working-directory: /githubactions/demo
         
       - name: Run a script
         run: |
