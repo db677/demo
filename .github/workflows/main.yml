@@ -22,7 +22,7 @@ jobs:
         
       - name: Run a script
         run: |
-          ./test.sh
+          /githubactions/demo/test.sh
       
 
       
