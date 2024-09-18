@@ -11,7 +11,7 @@ on:
 
   
 jobs:
-  build:  #job name
+  exec-step1:  #job name
     runs-on: self-hosted    #unbuntu-latest
 
     steps:
@@ -29,8 +29,8 @@ jobs:
       
 
 
-  build2: 
-    needs: [build]
+  exec-step2: 
+    needs: [exec-step1]
     runs-on: self-hosted    #unbuntu-latest
 
     steps:
@@ -40,3 +40,31 @@ jobs:
       - name: Run a script
         run: |
           /githubactions/demo/step2.sh      
+
+
+  exec-step3: 
+    needs: [exec-step1]
+    runs-on: self-hosted    #unbuntu-latest
+
+    steps:
+      #- name: Check out the repository to the runner
+      #  uses: actions/checkout@v4  
+
+      - name: Run a script
+        run: |
+          /githubactions/demo/step3.sh     
+
+
+  exec-step4: 
+    needs: [exec-step2, exec-step3]
+    runs-on: self-hosted    #unbuntu-latest
+
+    steps:
+      #- name: Check out the repository to the runner
+      #  uses: actions/checkout@v4  
+
+      - name: Run a script
+        run: |
+          /githubactions/demo/step4.sh   
+
+          
