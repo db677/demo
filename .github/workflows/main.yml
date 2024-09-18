@@ -11,10 +11,13 @@ on:
 
   
 jobs:
-  build:
+  build:  #job name
     runs-on: self-hosted    #unbuntu-latest
 
     steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4  
+        
       #- name: Set up the working directory
       #  run: |
       #    mkdir -p demo
@@ -22,7 +25,18 @@ jobs:
         
       - name: Run a script
         run: |
-          /githubactions/demo/test.sh
+          /githubactions/demo/step1.sh
       
 
-      
+
+  build2: 
+    needs: [build]
+    runs-on: self-hosted    #unbuntu-latest
+
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4  
+
+      - name: Run a script
+        run: |
+          /githubactions/demo/step2.sh      
